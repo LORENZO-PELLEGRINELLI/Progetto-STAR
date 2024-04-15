@@ -2,7 +2,6 @@
 #include <Arduino_SensorKit_BMP280.h>
 #include <Arduino_SensorKit_LIS3DHTR.h>
 
-#include "Arduino_SensorKit.h"
 
 #include <LiquidCrystal.h>
 	
@@ -101,9 +100,7 @@ void loop() {
         lcd.print("Sound");
         break;
       case 4:
-        lcd.print(Environment.readTemperature()); //print temperature
-        lcd.println(" C");
-        delay(2000);
+        lcd.print("Temperature");
         break;
       case 5:
         lcd.print("Humidity");
@@ -120,4 +117,3 @@ void loop() {
 
   delay(500); // Aggiungi un ritardo per una visualizzazione più stabile
 }
-

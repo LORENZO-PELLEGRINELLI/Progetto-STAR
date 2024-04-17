@@ -1,7 +1,13 @@
-#include <Arduino_SensorKit.h>
+	
+#include "Arduino_SensorKit.h"
 #include <Arduino_SensorKit_BMP280.h>
 #include <Arduino_SensorKit_LIS3DHTR.h>
 
+#define Environment Environment_I2C
+
+
+//Buzzer
+#define BUZZER 5
 
 #include <LiquidCrystal.h>
 	
@@ -17,11 +23,21 @@ float pressure;
 int pulsante = 13;
 bool statoLed = false;
 
-//I sensori vanno fatti partire solo quando vengono chiamati nello switch
+//Led che si illumina per le misurazioni
+#define LED 6
 
+//Per il sensore della luce
+int light_sensor = A3; 
+
+//Sensore del suono
+int sound_sensor = A2; //assign to pin A2
+
+//I sensori vanno fatti partire solo quando vengono chiamati nello switch
 void setup() {
   lcd.begin(16, 2);
   pinMode(pulsante, INPUT);
+  pinMode(LED,OUTPUT);    //Sets the pinMode to Output
+  pinMode(BUZZER, OUTPUT);
 }
 
 void loop() {
@@ -51,68 +67,97 @@ void loop() {
       lcd.print("6 - Humidity");
       break;
   }
-  
-  // Gestione del pulsante per la selezione delle opzioni
-  if (digitalRead(pulsante) == HIGH) {
-    // Visualizza il messaggio del sensore selezionato
+
+  //Gestione selezione opzioni
+
+  if(digitalRead(pulsante) == HIGH){
     lcd.setCursor(0, 0);
     lcd.clear();
-    switch(menuOption) {
-      case 0:
-        Pressure.begin();
-        lcd.print("Temp: ");
-        lcd.print(Pressure.readTemperature());  // The unit for Celsius because original Arduino don't support special symbols
-        lcd.print(" C");
-        delay(3000);
-        lcd.clear();
-        lcd.print("Pressure: ");
-        lcd.print(Pressure.readPressure());
-        lcd.print(" Pa");
-        delay(3000);
-        lcd.clear();
-        lcd.print("Altitude: ");
-        lcd.print(Pressure.readAltitude());
-        lcd.print(" m");
-        delay(2500);
-        lcd.clear();
-        break;
-      case 1:
-        Accelerometer.begin();
-        lcd.print("x:"); 
-        lcd.print(Accelerometer.readX());
-        delay(2000);
-        lcd.clear();
-        lcd.print("y:"); 
-        lcd.print(Accelerometer.readY());
-        delay(2000);
-        lcd.clear();        
-        lcd.print("z:"); 
-        lcd.println(Accelerometer.readZ());
-        delay(2000);
-        lcd.clear();
-        break;
 
+    switch(menuOption){
+      case 0:{
+          Pressure.begin();
+          digitalWrite(LED, HIGH);  //Led si attiva per la misurazione
+          tone(BUZZER, 300); //Set the voltage to high and makes a noise
+          lcd.print("Temp: ");
+          lcd.print(Pressure.readTemperature());  // The unit for Celsius because original Arduino don't support special symbols
+          lcd.print(" C");
+          delay(3000);
+          lcd.clear();
+          lcd.print("Pressure: ");
+          lcd.print(Pressure.readPressure());
+          lcd.print(" Pa");
+          delay(3000);
+          lcd.clear();
+          lcd.print("Altitude: ");
+          lcd.print(Pressure.readAltitude());
+          lcd.print(" m");   	
+          delay(2500);
+          digitalWrite(LED, LOW);  //led si spegne appena finita la misurazione
+          noTone(BUZZER);//Sets the voltage to low and makes no noise
+          lcd.clear();
+          break;
+      }
 
-      case 2:
-        lcd.print("Light");
+      case 1:{
+          Accelerometer.begin();
+          digitalWrite(LED, HIGH);  //Led si attiva per la misurazione
+          tone(BUZZER, 300); //Set the voltage to high and makes a noise
+          lcd.print("x:"); 
+          lcd.print(Accelerometer.readX());
+          delay(2000);
+          lcd.clear();
+          lcd.print("y:"); 
+          lcd.print(Accelerometer.readY());
+          delay(2000);
+          lcd.clear();        
+          lcd.print("z:"); 
+          lcd.println(Accelerometer.readZ());
+          delay(2000);
+          digitalWrite(LED, LOW);  //led si spegne appena finita la misurazione
+          noTone(BUZZER);//Sets the voltage to low and makes no noise
+          lcd.clear();
+          break;
+
+      }
+
+      case 2:{
+        digitalWrite(LED, HIGH);  //Led si attiva per la misurazione
+        tone(BUZZER, 300); //Set the voltage to high and makes a noise
+        int raw_light = analogRead(light_sensor); // read the raw value from light_sensor pin (A3)
+        int light = map(raw_light, 0, 1023, 0, 100); // map the value from 0, 1023 to 0, 100
+
+        lcd.print("Light level: "); 
+        lcd.println(light); // print the light value in Serial Monitor
+        delay(2000); // add a delay to only read and print every 2 seconds
+
+        digitalWrite(LED, LOW);  //led si spegne appena finita la misurazione
+        noTone(BUZZER);//Sets the voltage to low and makes no noise
+        lcd.clear();
         break;
-      case 3:
-        lcd.print("Sound");
+      }
+
+      case 3:{
+        digitalWrite(LED, HIGH);  //Led si attiva per la misurazione
+        tone(BUZZER, 300); //Set the voltage to high and makes a noise
+        int soundValue = 0; //create variable to store many different readings
+        for (int i = 0; i < 32; i++) //create a for loop to read 
+        { soundValue += analogRead(sound_sensor);  } //read the sound sensor
+      
+        soundValue >>= 5; //bitshift operation 
+
+        lcd.println(soundValue); //print the value of sound sensor
+        delay(3000);
+        digitalWrite(LED, LOW);  //led si spegne appena finita la misurazione
+        noTone(BUZZER);//Sets the voltage to low and makes no noise
+        lcd.clear();
         break;
-      case 4:
-        lcd.print("Temperature");
-        break;
-      case 5:
-        lcd.print("Humidity");
-         break;
+      }
+
+     
     }
-    
-    delay(2000); // Ritardo per la visualizzazione del messaggio
-    
-    // Ripristina il display principale
-    lcd.clear();
-    lcd.setCursor(0, 0);
   }
+  
   
 
   delay(500); // Aggiungi un ritardo per una visualizzazione più stabile

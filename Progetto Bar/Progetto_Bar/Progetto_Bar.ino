@@ -38,6 +38,7 @@ void setup() {
   pinMode(pulsante, INPUT);
   pinMode(LED,OUTPUT);    //Sets the pinMode to Output
   pinMode(BUZZER, OUTPUT);
+  Serial.begin(9600);
 }
 
 void loop() {
@@ -46,6 +47,7 @@ void loop() {
   
   lcd.clear();
   lcd.setCursor(0, 0);
+  Serial.println("Ciao");
   
   switch(menuOption) {
     case 0:

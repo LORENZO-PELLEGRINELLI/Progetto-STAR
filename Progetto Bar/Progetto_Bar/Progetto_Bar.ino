@@ -48,6 +48,7 @@ void loop() {
   lcd.clear();
   lcd.setCursor(0, 0);
   Serial.println("Ciao");
+  Serial.println("Si");
   
   switch(menuOption) {
     case 0:

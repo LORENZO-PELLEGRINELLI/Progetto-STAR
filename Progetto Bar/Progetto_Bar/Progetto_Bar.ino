@@ -1,55 +1,59 @@
-	
-#include "Arduino_SensorKit.h"
-#include <Arduino_SensorKit_BMP280.h>
 #include <Arduino_SensorKit_LIS3DHTR.h>
 
 #define Environment Environment_I2C
 
-
-//Buzzer
+// Definizione del pin del buzzer
 #define BUZZER 5
 
+// Inclusione della libreria LiquidCrystal
 #include <LiquidCrystal.h>
 	
+// Definizione delle connessioni dei pin per il display LCD
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
-const int potPin = A0;  // Posizione del potenziometro che gestisce il Menu
+// Definizione del pin per il potenziometro
+const int potPin = A0;
+
+// Variabile per tenere traccia dell'opzione del menu
 int menuOption = 0;
-const int numOptions = 6; // Numero di opzioni nel menu (6 opzioni)
+const int numOptions = 6;
 
-//Per i senrori
-float pressure;
-
+// Definizione del pin per il pulsante
 int pulsante = 13;
-bool statoLed = false;
 
-//Led che si illumina per le misurazioni
-#define LED 6
+// Definizione del pin per il sensore di luce
+int light_sensor = A3;
 
-//Per il sensore della luce
-int light_sensor = A3; 
+// Definizione del pin per il sensore del suono
+int sound_sensor = A2;
 
-//Sensore del suono
-int sound_sensor = A2; //assign to pin A2
-
-//I sensori vanno fatti partire solo quando vengono chiamati nello switch
 void setup() {
+  // Inizializzazione del display LCD
   lcd.begin(16, 2);
+  
+  // Configurazione del pin del pulsante come input
   pinMode(pulsante, INPUT);
-  pinMode(LED,OUTPUT);    //Sets the pinMode to Output
+  
+  // Configurazione del pin LED come output
+  pinMode(LED, OUTPUT);
+  
+  // Configurazione del pin del buzzer come output
   pinMode(BUZZER, OUTPUT);
+  
+  // Inizializzazione della comunicazione seriale a 9600 baud
   Serial.begin(9600);
 }
 
 void loop() {
+  // Lettura del valore del potenziometro per selezionare l'opzione del menu
   int sensorValue = analogRead(potPin);
   menuOption = map(sensorValue, 0, 1023, 0, numOptions - 1);
   
+  // Pulizia del display LCD
   lcd.clear();
   lcd.setCursor(0, 0);
-  Serial.println("Ciao");
-  Serial.println("Si");
   
+  // Visualizzazione delle opzioni del menu
   switch(menuOption) {
     case 0:
       lcd.print("1 - Air");
@@ -71,97 +75,52 @@ void loop() {
       break;
   }
 
-  //Gestione selezione opzioni
-
-  if(digitalRead(pulsante) == HIGH){
+  // Gestione selezione opzioni
+  if(digitalRead(pulsante) == HIGH) {
     lcd.setCursor(0, 0);
     lcd.clear();
 
-    switch(menuOption){
-      case 0:{
-          Pressure.begin();
-          digitalWrite(LED, HIGH);  //Led si attiva per la misurazione
-          tone(BUZZER, 300); //Set the voltage to high and makes a noise
-          lcd.print("Temp: ");
-          lcd.print(Pressure.readTemperature());  // The unit for Celsius because original Arduino don't support special symbols
-          lcd.print(" C");
-          delay(3000);
-          lcd.clear();
-          lcd.print("Pressure: ");
-          lcd.print(Pressure.readPressure());
-          lcd.print(" Pa");
-          delay(3000);
-          lcd.clear();
-          lcd.print("Altitude: ");
-          lcd.print(Pressure.readAltitude());
-          lcd.print(" m");   	
-          delay(2500);
-          digitalWrite(LED, LOW);  //led si spegne appena finita la misurazione
-          noTone(BUZZER);//Sets the voltage to low and makes no noise
-          lcd.clear();
-          break;
-      }
-
-      case 1:{
-          Accelerometer.begin();
-          digitalWrite(LED, HIGH);  //Led si attiva per la misurazione
-          tone(BUZZER, 300); //Set the voltage to high and makes a noise
-          lcd.print("x:"); 
-          lcd.print(Accelerometer.readX());
-          delay(2000);
-          lcd.clear();
-          lcd.print("y:"); 
-          lcd.print(Accelerometer.readY());
-          delay(2000);
-          lcd.clear();        
-          lcd.print("z:"); 
-          lcd.println(Accelerometer.readZ());
-          delay(2000);
-          digitalWrite(LED, LOW);  //led si spegne appena finita la misurazione
-          noTone(BUZZER);//Sets the voltage to low and makes no noise
-          lcd.clear();
-          break;
-
-      }
-
-      case 2:{
-        digitalWrite(LED, HIGH);  //Led si attiva per la misurazione
-        tone(BUZZER, 300); //Set the voltage to high and makes a noise
-        int raw_light = analogRead(light_sensor); // read the raw value from light_sensor pin (A3)
-        int light = map(raw_light, 0, 1023, 0, 100); // map the value from 0, 1023 to 0, 100
-
-        lcd.print("Light level: "); 
-        lcd.println(light); // print the light value in Serial Monitor
-        delay(2000); // add a delay to only read and print every 2 seconds
-
-        digitalWrite(LED, LOW);  //led si spegne appena finita la misurazione
-        noTone(BUZZER);//Sets the voltage to low and makes no noise
-        lcd.clear();
+    switch(menuOption) {
+      case 0:
+        Pressure.begin();
+        // Invia i dati del sensore di pressione attraverso la porta seriale
+        Serial.print("Pressure: ");
+        Serial.print(Pressure.readPressure());
+        Serial.println(" Pa");
         break;
-      }
-
-      case 3:{
-        digitalWrite(LED, HIGH);  //Led si attiva per la misurazione
-        tone(BUZZER, 300); //Set the voltage to high and makes a noise
-        int soundValue = 0; //create variable to store many different readings
-        for (int i = 0; i < 32; i++) //create a for loop to read 
-        { soundValue += analogRead(sound_sensor);  } //read the sound sensor
-      
-        soundValue >>= 5; //bitshift operation 
-
-        lcd.println(soundValue); //print the value of sound sensor
-        delay(3000);
-        digitalWrite(LED, LOW);  //led si spegne appena finita la misurazione
-        noTone(BUZZER);//Sets the voltage to low and makes no noise
-        lcd.clear();
+      case 1:
+        Accelerometer.begin();
+        // Invia i dati dell'accelerometro attraverso la porta seriale
+        Serial.print("Acceleration - X: ");
+        Serial.print(Accelerometer.readX());
+        Serial.print(", Y: ");
+        Serial.print(Accelerometer.readY());
+        Serial.print(", Z: ");
+        Serial.println(Accelerometer.readZ());
         break;
-      }
-
-     
+      case 2:
+        // Leggi il valore del sensore di luce
+        int raw_light = analogRead(light_sensor);
+        int light = map(raw_light, 0, 1023, 0, 100);
+        // Invia i dati del sensore di luce attraverso la porta seriale
+        Serial.print("Light level: ");
+        Serial.println(light);
+        break;
+      case 3:
+        // Leggi il valore del sensore del suono
+        int soundValue = 0;
+        for (int i = 0; i < 32; i++) {
+          soundValue += analogRead(sound_sensor);
+        }
+        soundValue >>= 5;
+        // Invia i dati del sensore del suono attraverso la porta seriale
+        Serial.print("Sound level: ");
+        Serial.println(soundValue);
+        break;
     }
   }
   
-  
-
-  delay(500); // Aggiungi un ritardo per una visualizzazione più stabile
+  // Aggiungi un ritardo per una visualizzazione più stabile
+  delay(500);
 }
+

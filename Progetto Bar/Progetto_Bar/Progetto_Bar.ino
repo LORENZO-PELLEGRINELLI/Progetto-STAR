@@ -48,6 +48,7 @@ void setup() {
 void loop() {
   int sensorValue = analogRead(potPin);
   menuOption = map(sensorValue, 0, 1023, 0, numOptions - 1);
+
   
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -89,20 +90,31 @@ void loop() {
           tone(BUZZER, 300); //Set the voltage to high and makes a noise
           lcd.print("Temp: ");
           lcd.print(Pressure.readTemperature());  // The unit for Celsius because original Arduino don't support special symbols
-          Serial.println(Pressure.readTemperature());  //Pressione comunicata al Rasperry
+
+          Serial.print("Temperatura: ");  //Pressione comunicata al Rasperry
+          Serial.println(Pressure.readTemperature()); 
+          Serial.print("C");
+
           lcd.print(" C");
           delay(3000);
           lcd.clear();
           lcd.print("Pressure: ");
           lcd.print(Pressure.readPressure());
+
           Serial.print("Pressure:");
           Serial.println(Pressure.readPressure());
+          Serial.print("Pa");
+
           lcd.print(" Pa");
           delay(3000);
           lcd.clear();
-          lcd.print("Altitude: ");
+          lcd.print("Altitude:");
           lcd.print(Pressure.readAltitude());
-          Serial.println(Pressure.readAltitude());  //Altitudinecomunicata al Rasperry
+
+          Serial.print("Altitudine:");  
+          Serial.println(Pressure.readAltitude());  //Altitudine comunicata al Rasperry
+          Serial.print("m");
+
           lcd.print(" m");   	
           delay(2500);
           digitalWrite(LED, LOW);  //led si spegne appena finita la misurazione
@@ -118,14 +130,26 @@ void loop() {
           tone(BUZZER, 300); //Set the voltage to high and makes a noise
           lcd.print("x:"); 
           lcd.print(Accelerometer.readX());
+          
+          Serial.print("X:");  
+          Serial.println(Accelerometer.readX());  
+
           delay(2000);
           lcd.clear();
           lcd.print("y:"); 
           lcd.print(Accelerometer.readY());
+
+          Serial.print("Y:");  
+          Serial.println(Accelerometer.readY()); 
+
           delay(2000);
           lcd.clear();        
           lcd.print("z:"); 
           lcd.println(Accelerometer.readZ());
+
+          Serial.print("Z:");  
+          Serial.println(Accelerometer.readZ()); 
+
           delay(2000);
           digitalWrite(LED, LOW);  //led si spegne appena finita la misurazione
           noTone(BUZZER);//Sets the voltage to low and makes no noise
@@ -143,6 +167,10 @@ void loop() {
 
         lcd.print("Light level: "); 
         lcd.println(light); // print the light value in Serial Monitor
+
+        Serial.print("Light level:");  
+        Serial.println(light); 
+
         delay(2000); // add a delay to only read and print every 2 seconds
 
         digitalWrite(LED, LOW);  //led si spegne appena finita la misurazione
@@ -162,6 +190,10 @@ void loop() {
         soundValue >>= 5; //bitshift operation 
 
         lcd.println(soundValue); //print the value of sound sensor
+
+        Serial.print("Sound value:");  
+        Serial.println(soundValue); 
+
         delay(3000);
         digitalWrite(LED, LOW);  //led si spegne appena finita la misurazione
         noTone(BUZZER);//Sets the voltage to low and makes no noise

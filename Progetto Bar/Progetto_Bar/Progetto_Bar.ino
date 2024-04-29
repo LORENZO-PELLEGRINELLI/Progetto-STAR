@@ -95,13 +95,14 @@ void loop() {
           lcd.clear();
           lcd.print("Pressure: ");
           lcd.print(Pressure.readPressure());
-          Serial.println(Pressure.readPressure());  //Pressione comunicata al Rasperry
+          Serial.print("Pressure:");
+          Serial.println(Pressure.readPressure());
           lcd.print(" Pa");
           delay(3000);
           lcd.clear();
           lcd.print("Altitude: ");
           lcd.print(Pressure.readAltitude());
-          Serial.println(Pressure.readAltitude());  //Altitudine comunicata al Rasperry
+          Serial.println(Pressure.readAltitude());  //Altitudinecomunicata al Rasperry
           lcd.print(" m");   	
           delay(2500);
           digitalWrite(LED, LOW);  //led si spegne appena finita la misurazione

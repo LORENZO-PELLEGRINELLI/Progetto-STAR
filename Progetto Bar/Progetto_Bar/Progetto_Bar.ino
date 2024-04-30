@@ -85,37 +85,41 @@ void loop() {
     switch(menuOption){
       case 0:{
           Pressure.begin();
+          Serial.print("1");
           digitalWrite(LED, HIGH);  //Led si attiva per la misurazione
           digitalWrite(LEDStan, LOW);
           tone(BUZZER, 300); //Set the voltage to high and makes a noise
+
+          delay(2000);
+
           lcd.print("Temp: ");
-          lcd.print(Pressure.readTemperature());  // The unit for Celsius because original Arduino don't support special symbols
-
-          Serial.print("Temperatura: ");  //Pressione comunicata al Rasperry
-          Serial.println(Pressure.readTemperature()); 
-          Serial.print("C");
-
+          float temp = Pressure.readTemperature();
+          lcd.print(temp);  // The unit for Celsius because original Arduino don't support special symbols
+           
           lcd.print(" C");
+          Serial.println(temp);
+
           delay(3000);
           lcd.clear();
+
+
           lcd.print("Pressure: ");
-          lcd.print(Pressure.readPressure());
-
-          Serial.print("Pressure:");
-          Serial.println(Pressure.readPressure());
-          Serial.print("Pa");
-
+          float pressure = Pressure.readPressure();
+          lcd.print(pressure);
           lcd.print(" Pa");
+
+          Serial.println(pressure);
+        
+
           delay(3000);
           lcd.clear();
           lcd.print("Altitude:");
-          lcd.print(Pressure.readAltitude());
-
-          Serial.print("Altitudine:");  
-          Serial.println(Pressure.readAltitude());  //Altitudine comunicata al Rasperry
-          Serial.print("m");
-
+          float altitudine = Pressure.readAltitude();
+          lcd.print(altitudine);
           lcd.print(" m");   	
+          Serial.println(altitudine);
+
+
           delay(2500);
           digitalWrite(LED, LOW);  //led si spegne appena finita la misurazione
           noTone(BUZZER);//Sets the voltage to low and makes no noise
@@ -127,28 +131,26 @@ void loop() {
           Accelerometer.begin();
           digitalWrite(LED, HIGH);  //Led si attiva per la misurazione
           digitalWrite(LEDStan, LOW);
+          Serial.print("2");
           tone(BUZZER, 300); //Set the voltage to high and makes a noise
           lcd.print("x:"); 
           lcd.print(Accelerometer.readX());
-          
-          Serial.print("X:");  
-          Serial.println(Accelerometer.readX());  
 
           delay(2000);
+
+          Serial.println(Accelerometer.readX());
+
           lcd.clear();
           lcd.print("y:"); 
-          lcd.print(Accelerometer.readY());
-
-          Serial.print("Y:");  
-          Serial.println(Accelerometer.readY()); 
 
           delay(2000);
+          lcd.print(Accelerometer.readY());
+
+
           lcd.clear();        
           lcd.print("z:"); 
           lcd.println(Accelerometer.readZ());
 
-          Serial.print("Z:");  
-          Serial.println(Accelerometer.readZ()); 
 
           delay(2000);
           digitalWrite(LED, LOW);  //led si spegne appena finita la misurazione

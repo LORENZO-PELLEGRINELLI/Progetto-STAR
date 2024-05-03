@@ -133,23 +133,34 @@ void loop() {
           digitalWrite(LEDStan, LOW);
           Serial.print("2");
           tone(BUZZER, 300); //Set the voltage to high and makes a noise
-          lcd.print("x:"); 
-          lcd.print(Accelerometer.readX());
 
           delay(2000);
 
-          Serial.println(Accelerometer.readX());
+          float x = Accelerometer.readX();
+
+          lcd.print("x:"); 
+          lcd.print(x);
+
+          Serial.println(x);
+        
+          delay(2000);
+
+         
 
           lcd.clear();
+          float y = Accelerometer.readY();
           lcd.print("y:"); 
+          lcd.print(y);
+          Serial.println(y);
 
           delay(2000);
-          lcd.print(Accelerometer.readY());
 
 
-          lcd.clear();        
+          lcd.clear();   
+          float z = Accelerometer.readZ();     
           lcd.print("z:"); 
-          lcd.println(Accelerometer.readZ());
+          lcd.println(z);
+          Serial.println(z);
 
 
           delay(2000);
@@ -163,14 +174,17 @@ void loop() {
       case 2:{
         digitalWrite(LED, HIGH);  //Led si attiva per la misurazione
         digitalWrite(LEDStan, LOW);
+        Serial.print("3");
         tone(BUZZER, 300); //Set the voltage to high and makes a noise
         int raw_light = analogRead(light_sensor); // read the raw value from light_sensor pin (A3)
         int light = map(raw_light, 0, 1023, 0, 100); // map the value from 0, 1023 to 0, 100
 
+        delay(2000);
+
         lcd.print("Light level: "); 
         lcd.println(light); // print the light value in Serial Monitor
 
-        Serial.print("Light level:");  
+         
         Serial.println(light); 
 
         delay(2000); // add a delay to only read and print every 2 seconds
@@ -184,6 +198,7 @@ void loop() {
       case 3:{
         digitalWrite(LED, HIGH);  //Led si attiva per la misurazione
         digitalWrite(LEDStan, LOW);
+        Serial.print("4");
         tone(BUZZER, 300); //Set the voltage to high and makes a noise
         int soundValue = 0; //create variable to store many different readings
         for (int i = 0; i < 32; i++) //create a for loop to read 
@@ -191,9 +206,10 @@ void loop() {
       
         soundValue >>= 5; //bitshift operation 
 
-        lcd.println(soundValue); //print the value of sound sensor
+        delay(2000);
 
-        Serial.print("Sound value:");  
+        lcd.println(soundValue); //print the value of sound sensor
+  
         Serial.println(soundValue); 
 
         delay(3000);

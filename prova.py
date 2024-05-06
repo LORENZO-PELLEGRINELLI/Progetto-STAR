@@ -1,5 +1,5 @@
 
-                
+            
 #!/usr/bin/env python3
 import serial, time
 
@@ -13,12 +13,17 @@ pressione = 0
 alt = 0
 altezza = 0
 
+
 def readTemperature():
 	temp = ser.readline().decode('utf-8').rstrip()
 	temperatura = temp
 	print("Temperatura: " + temperatura + " C")
 	temp = None
-	return temperatura
+	getTemp(temperatura)
+
+def getTemp(temp):
+	return temp
+	
 	
 	
 def readPressure():
@@ -81,7 +86,6 @@ if __name__ == '__main__':
                 time.sleep(2)
             elif line == "2":
                 print("Accellerometer")
-                readX()
                 readX()
                 time.sleep(2)
                 readY()

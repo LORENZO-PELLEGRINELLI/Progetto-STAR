@@ -1,3 +1,5 @@
+
+                
 #!/usr/bin/env python3
 import serial, time
 
@@ -16,6 +18,7 @@ def readTemperature():
 	temperatura = temp
 	print("Temperatura: " + temperatura + " C")
 	temp = None
+	return temperatura
 	
 	
 def readPressure():
@@ -79,6 +82,7 @@ if __name__ == '__main__':
             elif line == "2":
                 print("Accellerometer")
                 readX()
+                readX()
                 time.sleep(2)
                 readY()
                 time.sleep(2)
@@ -95,10 +99,3 @@ if __name__ == '__main__':
                 readSound()
                 time.sleep(2)             
             
-                
-
-				
-				 
-               
-                
-                

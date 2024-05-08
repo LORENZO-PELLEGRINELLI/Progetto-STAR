@@ -1,11 +1,8 @@
-
-            
 #!/usr/bin/env python3
 import serial, time
 
 
 temp = 0
-temperatura = 0
 
 press = 0
 pressione = 0
@@ -13,18 +10,16 @@ pressione = 0
 alt = 0
 altezza = 0
 
+global temperatura
 
 def readTemperature():
 	temp = ser.readline().decode('utf-8').rstrip()
 	temperatura = temp
 	print("Temperatura: " + temperatura + " C")
 	temp = None
-	getTemp(temperatura)
+	return temperatura
+	
 
-def getTemp(temp):
-	return temp
-	
-	
 	
 def readPressure():
 	press = ser.readline().decode('utf-8').rstrip()
@@ -103,3 +98,6 @@ if __name__ == '__main__':
                 readSound()
                 time.sleep(2)             
             
+                
+
+				
